@@ -8,13 +8,16 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class RequestChanges {
 
     public CurrencyChange request(String convertValue) {
           
         String url = "https://v6.exchangerate-api.com/v6/49ac8cba80f427abf135ac97/latest/" + convertValue;
-
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();  
         try {
 
             HttpClient client = HttpClient.newHttpClient();
@@ -25,10 +28,7 @@ public class RequestChanges {
             HttpResponse<String> response = client
                     .send(request, BodyHandlers.ofString());
 
-            String json = response.body();
-            System.out.println(json);
-
-            return new Gson().fromJson(response.body(), CurrencyChange.class);
+            return gson.fromJson(response.body(), CurrencyChange.class);
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
